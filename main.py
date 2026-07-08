@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from schemas import Workout
+from schemas import Workout, WorkoutOut
 from database import SessionLocal
 import database
 import models
@@ -36,3 +36,7 @@ def create_workout(workout: Workout, db: Session = Depends(get_db)):
     db.commit()
 
     return {"id": db_workout.id, "message": "Тренировка сохранена"}
+
+@app.get("/workouts", response_model=list[WorkoutOut])
+def get_workouts(db: Session = Depends(get_db)):
+    return db.query(models.WorkoutDB).all()
